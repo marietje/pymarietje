@@ -16,6 +16,21 @@ INITIAL_TIMEOUT = 100
 DEFAULT_TIMEOUT = 1000
 USERDIR = ".pymarietje"
 
+if hasattr(curses, 'use_default_colors'):
+	def curses_color_pair(*args, **kwargs):
+		return curses.color_pair(*args, **kwargs)
+	def curses_use_default_colors(*args, **kwargs):
+		return curses.use_default_colors(*args, **kwargs)
+	def curses_init_pair(*args, **kwargs):
+		return curses.init_pair(*args, **kwargs)
+else:
+	def curses_color_pair(*args, **kwargs):
+		return curses.A_BOLD
+	def curses_use_default_colors(*args, **kwargs):
+		pass
+	def curses_init_pair(*args, **kwargs):
+		pass
+
 def format_list(l):
 	""" Formats a list <l> neatly """
 	if len(l) == 1:
@@ -161,14 +176,14 @@ class ScrollingColsWindow:
 		if len(val) > cw:
 			if self.x_offset == 0:
 				self.w.addstr(val[:cw-1])
-				self.w.addch('$', curses.color_pair(1))
+				self.w.addch('$', curses_color_pair(1))
 			else:
-				self.w.addch('>', curses.color_pair(2))
+				self.w.addch('>', curses_color_pair(2))
 				off = self.x_offset
 				if off + cw - 2 > len(val):
 					off = len(val) - cw + 2
 				self.w.addstr(val[off:off+cw-2])
-				self.w.addch('$', curses.color_pair(1))
+				self.w.addch('$', curses_color_pair(1))
 		else:
 			self.w.addstr(val)
 
@@ -178,7 +193,7 @@ class ScrollingColsWindow:
 		self.w.move(y, 0)
 		self.w.clrtoeol()
 		if is_cursor:
-			self.w.attron(curses.color_pair(4))
+			self.w.attron(curses_color_pair(4))
 			self.w.hline(' ', self.w.getmaxyx()[1])
 		self.w.move(y, 0)
 		cx = 0
@@ -200,20 +215,20 @@ class ScrollingColsWindow:
 					try:
 						self.w.move(y, cx)
 						self.w.addch('!', 
-							curses.color_pair(2))
+							curses_color_pair(2))
 					except curses.error:
 						# This shouldn't happen!
 						raise Exception, (y, cx)
 			cx += cw
 		if is_cursor:
-			self.w.attroff(curses.color_pair(4))
+			self.w.attroff(curses_color_pair(4))
 
 	
 	def draw_line(self, y, is_cursor):
 		""" Draws a line """
 		self.w.move(y, 0)
 		if y + self.y_offset >= self.y_max:
-			self.w.addstr('~', curses.color_pair(1))
+			self.w.addstr('~', curses_color_pair(1))
 			self.w.clrtoeol()
 		else:
 			cells = self.get_cells(y + self.y_offset)
@@ -528,11 +543,12 @@ class CursesMarietje:
 		self._main_loop()
 
 	def _setup(self, window):
-		curses.use_default_colors()
-		curses.init_pair(1, curses.COLOR_BLUE, -1)
-		curses.init_pair(2, curses.COLOR_GREEN, -1)
-		curses.init_pair(3, curses.COLOR_RED, -1)
-		curses.init_pair(4, curses.COLOR_BLACK, curses.COLOR_WHITE)
+		curses_use_default_colors()
+		curses_init_pair(1, curses.COLOR_BLUE, -1)
+		curses_init_pair(2, curses.COLOR_GREEN, -1)
+		curses_init_pair(3, curses.COLOR_RED, -1)
+		curses_init_pair(4, curses.COLOR_BLACK,
+				    curses.COLOR_WHITE)
 		self.window = window
 		h,w = self.window.getmaxyx()
 		self.queue_main = QueueWindow(self.window.derwin(h-1,w,0,0),
@@ -619,7 +635,7 @@ class CursesMarietje:
 			elif k == 258: # down
 				self.main.scroll_down()
 				self.refresh_status = True
-			elif k == 263: # backspace
+			elif k == 263 or k == 127: # backspace
 				if len(self.query) != 0:
 					self.query = self.query[:-1]
 			elif k == 23: # C-w
@@ -673,12 +689,12 @@ class CursesMarietje:
 		if fetched:
 			ret |= curses.A_BOLD
 			if fetching:
-				ret |= curses.color_pair(2)
+				ret |= curses_color_pair(2)
 		else:
 			if fetching:
-				ret |= curses.color_pair(2)
+				ret |= curses_color_pair(2)
 			else:
-				ret |= curses.color_pair(3)
+				ret |= curses_color_pair(3)
 		return ret
 
 	def update_status(self, forceRedraw):
