@@ -3,6 +3,7 @@ from __future__ import with_statement
 import os
 import yaml
 import time
+import gzip
 import curses
 import os.path
 import logging
@@ -514,9 +515,6 @@ class QueueWindow(ScrollingColsWindow):
 class CursesMarietje:
 	def __init__(self):
 		self.running = False
-		self.m = Marietje(queueCb=self.on_queue_fetched,
-				songCb=self.on_songs_fetched,
-				playingCb=self.on_playing_fetched)
 		self.refresh_status = True
 		self.statusline = ''
 		self.status_shown_once = False
@@ -530,16 +528,28 @@ class CursesMarietje:
 			except Exception, e:
 				self.userdir = None
 		else:
-			fp = os.path.join(self.userdir, 'songs-cache')
-			if os.path.exists(fp):
-				with open(fp) as f:
-					self.m.songs_from_cache(f)
 			fp = os.path.join(self.userdir, 'config')
 			if os.path.exists(fp):
 				with open(fp) as f:
 					self.options = yaml.load(f)
 			else:
 				self.options = {}
+		
+		if not 'marietje' in self.options:
+			self.options['marietje'] = dict()
+		if not 'username' in self.options['marietje']:
+			self.options['marietje']['username'] = os.getlogin()
+
+		self.m = Marietje(self.options['marietje']['username'],
+				queueCb=self.on_queue_fetched,
+				songCb=self.on_songs_fetched,
+				playingCb=self.on_playing_fetched)
+
+		if not self.userdir is None:
+			fp = os.path.join(self.userdir, 'songs-cache')
+			if os.path.exists(fp):
+				with open(fp) as f:
+					self.m.songs_from_cache(f)
 		self.l = logging.getLogger('CursesMarietje')
 	
 	def refetch(self, fetchSongs=True, fetchQueue=True,

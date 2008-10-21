@@ -143,9 +143,9 @@ class Marietje:
 	""" A more convenient interface to Marietje.
 	    NOTE, even though there is a ton of threading.* goodness in here,
 	    	  this class is not to be used by several threads at a time """
-	def __init__(self, queueCb=None, songCb=None, playingCb=None,
+	def __init__(self, username, queueCb=None, songCb=None, playingCb=None,
 			host=DEFAULT_HOST, port=DEFAULT_PORT,
-			charset=DEFAULT_LS_CHARSET, username=None):
+			charset=DEFAULT_LS_CHARSET):
 		""" <xCb> is a callback for when x is fetched;
 		    <charset> is used as charset for the livesearch look-up
 		    tree. """
@@ -164,7 +164,7 @@ class Marietje:
 		self.playing_cond = threading.Condition()
 		self.cs = charset
 		self.cs_lut = set(charset)
-		self.username = os.getlogin() if username is None else username
+		self.username = username
 		self.l = logging.getLogger('Marietje')
 	
 	def _sanitize(self, txt):
