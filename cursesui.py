@@ -1,6 +1,7 @@
 from __future__ import with_statement
 
 import os
+import yaml
 import time
 import curses
 import os.path
@@ -15,6 +16,15 @@ VERSION = 1
 INITIAL_TIMEOUT = 100
 DEFAULT_TIMEOUT = 1000
 USERDIR = ".pymarietje"
+
+CP_WHITE = 0
+CP_BLUE = 1
+CP_GREEN = 2
+CP_RED = 3
+CP_CWHITE = 4
+CP_CBLUE = 5
+CP_CGREEN = 6
+CP_CRED = 7
 
 if hasattr(curses, 'use_default_colors'):
 	def curses_color_pair(*args, **kwargs):
@@ -171,24 +181,24 @@ class ScrollingColsWindow:
 			self.col_ws = self._layout(avgs, w, maxs)
 		self.y_max = N
 	
-	def draw_cell_text(self, val, start, end):
+	def draw_cell_text(self, val, start, end, colors):
 		self.w.addstr(val[start:end])
 	
-	def draw_cell(self, y, cx, cw, val):
+	def draw_cell(self, y, cx, cw, val, colors):
 		self.w.move(y, cx)
 		if len(val) > cw:
 			if self.x_offset == 0:
 				self.draw_cell_text(val, 0, cw-1)
-				self.w.addch('$', curses_color_pair(1))
+				self.w.addch('$', colors[1])
 			else:
-				self.w.addch('>', curses_color_pair(2))
+				self.w.addch('>', colors[2])
 				off = self.x_offset
 				if off + cw - 2 > len(val):
 					off = len(val) - cw + 2
 				self.draw_cell_text(val, off, off+cw-2)
-				self.w.addch('$', curses_color_pair(1))
+				self.w.addch('$', colors[3])
 		else:
-			self.draw_cell_text(val, 0, len(val))
+			self.draw_cell_text(val, 0, len(val), colors)
 
 	
 	def draw_cols_line(self, y, cells, is_cursor):
@@ -196,8 +206,13 @@ class ScrollingColsWindow:
 		self.w.move(y, 0)
 		self.w.clrtoeol()
 		if is_cursor:
-			self.w.attron(curses_color_pair(4))
+			self.w.attron(curses_color_pair(CP_CWHITE))
 			self.w.hline(' ', self.w.getmaxyx()[1])
+			colors = map(curses_color_pair,
+				[CP_CWHITE, CP_CBLUE, CP_CGREEN, CP_CRED])
+		else:
+			colors = map(curses_color_pair,
+				[CP_WHITE, CP_BLUE, CP_GREEN, CP_RED])
 		self.w.move(y, 0)
 		cx = 0
 		for j in xrange(len(self.col_ws)):
@@ -206,7 +221,7 @@ class ScrollingColsWindow:
 				continue
 			cw = self.col_ws[j]
 			try:
-				self.draw_cell(y, cx, cw, cells[j])
+				self.draw_cell(y, cx, cw, cells[j], colors)
 			except curses.error:
 				if y == self.w.getmaxyx()[0] - 1 and \
 					cx + cw == sum(self.col_ws):
@@ -217,8 +232,7 @@ class ScrollingColsWindow:
 				else:
 					try:
 						self.w.move(y, cx)
-						self.w.addch('!', 
-							curses_color_pair(2))
+						self.w.addch('!', colors[3])
 					except curses.error:
 						# This shouldn't happen!
 						raise Exception, (y, cx)
@@ -274,6 +288,7 @@ class ScrollingColsWindow:
 			elif self.c_offset + self.y_offset >= self.y_max:
 				self.c_offset = min(h - 1,
 						self.y_max - self.y_offset - 1)
+		start = time.time()
 		for y in xrange(h):
 			self.draw_line(y, self.use_cursor and y==self.c_offset)
 		# We update old_ here for they might've been updated
@@ -297,13 +312,47 @@ class ScrollingColsWindow:
 		return (self.y_offset, self.y_offset + self.old_h, self.y_max)
 
 class SearchWindow(ScrollingColsWindow):
-	def __init__(self, w, m):
+	def __init__(self, w, m, highlight=True):
 		ScrollingColsWindow.__init__(self, w, use_cursor=True)
 		self.needDataInfoRecreate = False
 		self.data_info = None
 		self.data = None
 		self.m = m
 		self.query = None
+		self.highlight = highlight
+		
+	def draw_cell_text(self, val, start, end, colors):
+		if not self.highlight:
+			return ScrollingColsWindow.draw_cell_text(self,
+					val, start, end, colors)
+		ridx = -1
+		idxs = [0]
+		val_lower = val.lower()
+		while True:
+			ridx = val_lower.find(self.query, ridx+1)
+			if ridx == -1:
+				break
+			if ridx < idxs[-1]:
+				idxs[-1] = ridx + len(self.query)
+			else:
+				idxs.append(ridx)
+				idxs.append(ridx + len(self.query))
+		idxs.append(len(val))
+		v = list(idxs)
+		v.sort()
+		assert v == idxs
+		m = True
+		for i in xrange(0, len(idxs)-1):
+			m = not m
+			istart, iend = idxs[i:i+2]
+			if end <= istart: continue
+			if iend <= start: continue
+			istart = max(istart, start)
+			iend = min(iend, end)
+			if istart == iend: continue
+			self.w.attron(colors[3 if m else 0])
+			self.w.addstr(val[istart:iend])
+			self.w.attroff(colors[3 if m else 0])
 	
 	def set_query(self, q):
 		if self.query == q:
@@ -485,6 +534,12 @@ class CursesMarietje:
 			if os.path.exists(fp):
 				with open(fp) as f:
 					self.m.songs_from_cache(f)
+			fp = os.path.join(self.userdir, 'config')
+			if os.path.exists(fp):
+				with open(fp) as f:
+					self.options = yaml.load(f)
+			else:
+				self.options = {}
 		self.l = logging.getLogger('CursesMarietje')
 	
 	def refetch(self, fetchSongs=True, fetchQueue=True,
@@ -523,7 +578,7 @@ class CursesMarietje:
 		self.queue_main.reset()
 
 	def set_status(self, value):
-		self.l.info('status:'+value)
+		self.l.info(value)
 		self.statusline = value
 		self.refresh_status = True
 		self.status_shown_once = False
@@ -538,6 +593,13 @@ class CursesMarietje:
 		self.running = True
 		while self.running:
 			curses.wrapper(self._inside_curses)
+		if not self.userdir is None:
+			with open(os.path.join(self.userdir,
+					'config'), 'w') as f:
+				self.options = yaml.dump(self.options, f)
+			with open(os.path.join(self.userdir, 
+					'songs-cache'), 'w') as f:
+				self.m.cache_songs_to(f)
 	
 	def _inside_curses(self, window):
 		if not self._been_setup:
@@ -547,17 +609,29 @@ class CursesMarietje:
 
 	def _setup(self, window):
 		curses_use_default_colors()
-		curses_init_pair(1, curses.COLOR_BLUE, -1)
-		curses_init_pair(2, curses.COLOR_GREEN, -1)
-		curses_init_pair(3, curses.COLOR_RED, -1)
-		curses_init_pair(4, curses.COLOR_BLACK,
-				    curses.COLOR_WHITE)
+		curses_init_pair(CP_BLUE, curses.COLOR_BLUE, -1)
+		curses_init_pair(CP_GREEN, curses.COLOR_GREEN, -1)
+		curses_init_pair(CP_RED, curses.COLOR_RED, -1)
+		curses_init_pair(CP_CWHITE, curses.COLOR_BLACK,
+				  	    curses.COLOR_WHITE)
+		curses_init_pair(CP_CBLUE, curses.COLOR_BLUE,
+					   curses.COLOR_WHITE)
+		curses_init_pair(CP_CGREEN, curses.COLOR_GREEN,
+					    curses.COLOR_WHITE)
+		curses_init_pair(CP_CRED, curses.COLOR_RED,
+					  curses.COLOR_WHITE)
+
 		self.window = window
 		h,w = self.window.getmaxyx()
 		self.queue_main = QueueWindow(self.window.derwin(h-1,w,0,0),
 					self.m)
+		if not 'search-window' in self.options:
+			self.options['search-window'] = dict()
+		if not 'highlight' in self.options['search-window']:
+			self.options['search-window']['highlight'] = True
 		self.search_main = SearchWindow(self.window.derwin(h-1,w,0,0),
-					self.m)
+					self.m, highlight=self.options[
+						'search-window']['highlight'])
 		self.status_w = self.window.derwin(1, w, h-1, 0)
 		self.main = self.queue_main
 		self.refetch(force=True)
@@ -692,12 +766,12 @@ class CursesMarietje:
 		if fetched:
 			ret |= curses.A_BOLD
 			if fetching:
-				ret |= curses_color_pair(2)
+				ret |= curses_color_pair(CP_GREEN)
 		else:
 			if fetching:
-				ret |= curses_color_pair(2)
+				ret |= curses_color_pair(CP_GREEN)
 			else:
-				ret |= curses_color_pair(3)
+				ret |= curses_color_pair(CP_RED)
 		return ret
 
 	def update_status(self, forceRedraw):
@@ -751,10 +825,6 @@ class CursesMarietje:
 			self.set_status("Songs (cache) in %s" % self.m.sCacheLoadTime)
 		else:
 			self.set_status("Songs in %s" % self.m.sLoadTime)
-			if not self.userdir is None:
-				with open(os.path.join(self.userdir, 
-						'songs-cache'), 'w') as f:
-					self.m.cache_songs_to(f)
 	
 	def on_playing_fetched(self):
 		if not self.m.playing_fetched:
