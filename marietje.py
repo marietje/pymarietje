@@ -5,6 +5,7 @@ DEFAULT_HOST = 'devslet.sci.kun.nl'
 DEFAULT_PORT = 1337
 DEFAULT_LS_CHARSET = '1234567890qwertyuiopasdfghjklzxcvbnm '
 
+import os
 import time
 import socket
 import logging
@@ -144,7 +145,7 @@ class Marietje:
 	    	  this class is not to be used by several threads at a time """
 	def __init__(self, queueCb=None, songCb=None, playingCb=None,
 			host=DEFAULT_HOST, port=DEFAULT_PORT,
-			charset=DEFAULT_LS_CHARSET):
+			charset=DEFAULT_LS_CHARSET, username=None):
 		""" <xCb> is a callback for when x is fetched;
 		    <charset> is used as charset for the livesearch look-up
 		    tree. """
@@ -163,6 +164,7 @@ class Marietje:
 		self.playing_cond = threading.Condition()
 		self.cs = charset
 		self.cs_lut = set(charset)
+		self.username = os.getlogin() if username is None else username
 		self.l = logging.getLogger('Marietje')
 	
 	def _sanitize(self, txt):
@@ -357,7 +359,7 @@ class Marietje:
 
 	def request_track(self, track_id):
 		""" Requests the track with id <track_id> """
-		self.raw.request_track(track_id, 'root')
+		self.raw.request_track(track_id, self.username)
 
 if __name__ == '__main__':
 	logging.basicConfig(level=logging.DEBUG)
