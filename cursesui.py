@@ -171,21 +171,24 @@ class ScrollingColsWindow:
 			self.col_ws = self._layout(avgs, w, maxs)
 		self.y_max = N
 	
+	def draw_cell_text(self, val, start, end):
+		self.w.addstr(val[start:end])
+	
 	def draw_cell(self, y, cx, cw, val):
 		self.w.move(y, cx)
 		if len(val) > cw:
 			if self.x_offset == 0:
-				self.w.addstr(val[:cw-1])
+				self.draw_cell_text(val, 0, cw-1)
 				self.w.addch('$', curses_color_pair(1))
 			else:
 				self.w.addch('>', curses_color_pair(2))
 				off = self.x_offset
 				if off + cw - 2 > len(val):
 					off = len(val) - cw + 2
-				self.w.addstr(val[off:off+cw-2])
+				self.draw_cell_text(val, off, off+cw-2)
 				self.w.addch('$', curses_color_pair(1))
 		else:
-			self.w.addstr(val)
+			self.draw_cell_text(val, 0, len(val))
 
 	
 	def draw_cols_line(self, y, cells, is_cursor):
