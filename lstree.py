@@ -14,10 +14,15 @@ class LSTree(object):
 		    the obj's. """
 		raise NotImplemented
 
+	def prune(self):
+		""" Take some effort to optimize.  Used before being
+		    cached """
+		pass
+
 class SimpleCachingLSTree(LSTree):
 	""" Simple implementation of LSTree, which caches """
 
-	def __init__(self, entries, max_cache=1000, nom_cache=750):
+	def __init__(self, entries, max_cache=10, nom_cache=7):
 		""" Creates a LS Tree
 			@entries	List of (text, obj) pairs
 			@max_cache	Maximum amount of cache entries
@@ -46,4 +51,8 @@ class SimpleCachingLSTree(LSTree):
 		self.cache[q][0] = time.time()
 		for txt, obj in self.cache[q][2]:
 			yield obj
-		
+	
+	def prune(self):
+		root = self.cache['']
+		self.cache = dict()
+		self.cache[''] = root

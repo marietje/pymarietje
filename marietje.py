@@ -323,7 +323,8 @@ class Marietje:
 				raise RuntimeError, "songs haven't been fetched"
 			songs = self.songs
 			sLut = self.sLut
-			
+		
+		sLut.prune()	
 		pickle.dump((songs, sLut), f, pickle.HIGHEST_PROTOCOL)
 	
 	def songs_from_cache(self, f, abort_on_preempt=True):

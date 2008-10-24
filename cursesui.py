@@ -13,7 +13,7 @@ from random import random
 from marietje import Marietje
 from cStringIO import StringIO
 
-VERSION = 3
+VERSION = 4
 INITIAL_TIMEOUT = 100
 DEFAULT_TIMEOUT = 1000
 USERDIR = ".pymarietje"
@@ -523,6 +523,8 @@ class CursesMarietje:
 		self.query = ''
 		self.userdir = os.path.expanduser(
 				os.path.join('~', USERDIR))
+
+		self.options = {}
 		if not os.path.exists(self.userdir):
 			try:
 				os.mkdir(self.userdir)
@@ -533,8 +535,6 @@ class CursesMarietje:
 			if os.path.exists(fp):
 				with open(fp) as f:
 					self.options = yaml.load(f)
-			else:
-				self.options = {}
 		
 		if not 'marietje' in self.options:
 			self.options['marietje'] = dict()
