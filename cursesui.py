@@ -13,7 +13,7 @@ from random import random
 from marietje import Marietje
 from cStringIO import StringIO
 
-VERSION = 1
+VERSION = 2
 INITIAL_TIMEOUT = 100
 DEFAULT_TIMEOUT = 1000
 USERDIR = ".pymarietje"
