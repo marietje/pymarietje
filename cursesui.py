@@ -406,6 +406,7 @@ class SearchWindow(ScrollingColsWindow):
 		cpos = self.c_offset + self.y_offset
 		track_id = self.data[cpos][0]
 		self.m.request_track(track_id)
+			
 
 class QueueWindow(ScrollingColsWindow):
 	def __init__(self, w, m):
@@ -742,9 +743,14 @@ class CursesMarietje:
 				if len(self.query) != 0:
 					self.query = ''
 			elif self.main is self.search_main and  k == 10: # RET
-				self.search_main.request_track()
+				try:
+					self.search_main.request_track()
+					self.query = ''
+				except MarietjeException, e:
+					self.l.exception("Exception while "+
+							"requesting track")
+					self.set_status(str(e))
 				self.refetch(fetchSongs=False)
-				self.query = ''
 			elif 0 < k and k < 128 and \
 					chr(k).lower() in self.m.cs_lut:
 				self.query += chr(k).lower()
