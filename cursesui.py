@@ -545,13 +545,19 @@ class CursesMarietje:
 				queueCb=self.on_queue_fetched,
 				songCb=self.on_songs_fetched,
 				playingCb=self.on_playing_fetched)
+		self.l = logging.getLogger('CursesMarietje')
 
 		if not self.userdir is None:
 			fp = os.path.join(self.userdir, 'songs-cache')
 			if os.path.exists(fp):
-				with open(fp) as f:
-					self.m.songs_from_cache(f)
-		self.l = logging.getLogger('CursesMarietje')
+				try:
+					with open(fp) as f:
+						self.m.songs_from_cache(f)
+				except Exception, e:
+					self.l.exception("Exception while "+
+						"reading cache")
+					# We silently assume self.m is in a
+					# consistent state in exception.
 	
 	def refetch(self, fetchSongs=True, fetchQueue=True,
 			  fetchPlaying=True, force=False):
