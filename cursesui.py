@@ -399,8 +399,6 @@ class SearchWindow(ScrollingColsWindow):
 		return (N, map(lambda x: x/N, sums), maxs)
 
 	def get_cells(self, j):
-		if j >= len(self.data):
-			raise "Meh %s" % j
 		return (self.data[j][1], self.data[j][2])
 	
 	def request_track(self):
