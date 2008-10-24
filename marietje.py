@@ -245,8 +245,8 @@ class Marietje:
 			starttime = time.time()
 			entries = list()
 			for id, (artist, title) in songs.iteritems():
-				entries.append((self._sanitize(artist), id))
-				entries.append((self._sanitize(title), id))
+				entries.append((self._sanitize(artist) + " " +
+					self._sanitize(title), id))
 			sLut = SimpleCachingLSTree(entries)
 			sLutGenTime = time.time() - starttime
 			with self.songs_cond:
