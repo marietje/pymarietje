@@ -198,7 +198,7 @@ class ScrollingColsWindow:
 					off = len(val) - cw + 2
 				self.draw_cell_text(val, off, off+cw-2,
 						colors)
-				self.w.addch('$', colors[3])
+				self.w.addch('$', colors[1])
 		else:
 			self.draw_cell_text(val, 0, len(val), colors)
 
