@@ -13,7 +13,7 @@ from random import random
 from marietje import Marietje
 from cStringIO import StringIO
 
-VERSION = 2
+VERSION = 3
 INITIAL_TIMEOUT = 100
 DEFAULT_TIMEOUT = 1000
 USERDIR = ".pymarietje"
@@ -189,14 +189,15 @@ class ScrollingColsWindow:
 		self.w.move(y, cx)
 		if len(val) > cw:
 			if self.x_offset == 0:
-				self.draw_cell_text(val, 0, cw-1)
+				self.draw_cell_text(val, 0, cw-1, colors)
 				self.w.addch('$', colors[1])
 			else:
 				self.w.addch('>', colors[2])
 				off = self.x_offset
 				if off + cw - 2 > len(val):
 					off = len(val) - cw + 2
-				self.draw_cell_text(val, off, off+cw-2)
+				self.draw_cell_text(val, off, off+cw-2,
+						colors)
 				self.w.addch('$', colors[3])
 		else:
 			self.draw_cell_text(val, 0, len(val), colors)
