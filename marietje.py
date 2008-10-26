@@ -109,12 +109,14 @@ class RawMarietje:
 		if l != 'SEND::FILE':
 			raise MarietjeException, \
 				"Unexpected reply: %s" % l
-		sf = s.makefile()
 		sent = 0
 		while sent != size:
 			toSent = size - sent
 			if toSent > 2048: toSent = 2048
-			sf.write(f.read(toSent))
+			stillToSent = toSent
+			txt = f.read(stillToSent)
+			while stillToSent > 0:
+				stillToSent -= s.send(txt[-stillToSent:])	
 			sent += toSent
 		l = s.recv(50)
 		if l != 'UPLOAD::SUCCESS':
