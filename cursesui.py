@@ -32,16 +32,17 @@ GOT_COLORS = True
 def curses_use_default_colors(*args, **kwargs):
 	if not hasattr(curses, 'has_colors') or \
 			not curses.has_colors():
+		global GOT_COLORS
 		GOT_COLORS = False
 		return
 	curses.use_default_colors(*args, **kwargs)
 def curses_color_pair(*args, **kwargs):
 	if not GOT_COLORS:
-		return
+		return curses.A_BOLD
 	return curses.color_pair(*args, **kwargs)
 def curses_init_pair(*args, **kwargs):
 	if not GOT_COLORS:
-		return curses.A_BOLD
+		return
 	return curses.init_pair(*args, **kwargs)
 
 def format_list(l):
