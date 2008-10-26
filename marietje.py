@@ -361,6 +361,11 @@ class Marietje:
 	def request_track(self, track_id):
 		""" Requests the track with id <track_id> """
 		self.raw.request_track(track_id, self.username)
+	
+	def upload_track(self, artist, title, size, f):
+		""" Uploads a track in <f> with <size> to marietje as
+		    <artist> - <title> """
+		self.raw.upload_track(artist, title, self.username, size, f)
 
 if __name__ == '__main__':
 	logging.basicConfig(level=logging.DEBUG)
