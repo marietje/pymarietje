@@ -10,7 +10,7 @@ import logging
 import threading
 import subprocess
 from random import random
-from marietje import Marietje
+from marietje import Marietje, MarietjeException
 from cStringIO import StringIO
 
 VERSION = 4
