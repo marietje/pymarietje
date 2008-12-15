@@ -700,6 +700,8 @@ class CursesMarietje:
 						# is then reentered via
 						# curses.wrapper
 						break
+					elif k == ord('a'):
+						self.query = '*'
 				finally:
 					window.timeout(self.timeout)
 			elif k == 410: # redraw
@@ -872,6 +874,7 @@ class CursesMarietje:
 				  " Alt+r  refresh screen   Alt+R  refresh screen harder\n"+
 				  " Alt+x  quit             Alt+?  guess!\n"+
 				  " Ctrl+u clear query      Ctrl+w only the last word\n"+
+				  " Alt+a  list all songs\n"+
 				  "\n"+
 				  "RUNTIME\n"+
 				  "  Load times\n"+
