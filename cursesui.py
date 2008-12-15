@@ -779,6 +779,8 @@ class CursesMarietje:
 						time.time() > self.m.queueOffsetTime:
 					self.refetch(fetchSongs=False)
 			if self.query != self.old_query:
+				if len(self.query) > 1 and self.query[0] == '*':
+					self.query = self.query[1:]
 				self.old_query = self.query
 				self.refresh_status = True
 				if self.main is self.search_main:
