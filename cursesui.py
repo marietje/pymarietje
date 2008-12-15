@@ -243,14 +243,16 @@ class ScrollingColsWindow:
 						raise Exception, (y, cx)
 			cx += cw
 		if is_cursor:
-			self.w.attroff(curses_color_pair(4))
+			self.w.attroff(curses_color_pair(
+				CP_CWHITE))
 
 	
 	def draw_line(self, y, is_cursor):
 		""" Draws a line """
 		self.w.move(y, 0)
 		if y + self.y_offset >= self.y_max:
-			self.w.addstr('~', curses_color_pair(1))
+			self.w.addstr('~', curses_color_pair(
+					CP_BLUE))
 			self.w.clrtoeol()
 		else:
 			cells = self.get_cells(y + self.y_offset)
