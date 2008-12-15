@@ -750,12 +750,12 @@ class CursesMarietje:
 			elif self.main is self.search_main and  k == 10: # RET
 				try:
 					self.search_main.request_track()
-					self.query = ''
 				except MarietjeException, e:
 					self.l.exception("Exception while "+
 							"requesting track")
 					self.set_status(str(e))
 				self.refetch(fetchSongs=False)
+				self.query = ''
 			elif 0 < k and k < 128 and \
 					chr(k).lower() in self.m.cs_lut:
 				self.query += chr(k).lower()
