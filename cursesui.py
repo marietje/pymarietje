@@ -13,7 +13,7 @@ from random import random
 from marietje import Marietje, MarietjeException
 from cStringIO import StringIO
 
-VERSION = 4
+VERSION = 5
 INITIAL_TIMEOUT = 100
 DEFAULT_TIMEOUT = 1000
 USERDIR = ".pymarietje"
