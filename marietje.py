@@ -349,16 +349,14 @@ class Marietje:
 	
 	def query(self, q):
 		""" Performs a query for all songs that have <q> in their title
-		    or artist.  Returns a list of (id, title, artist) """
+		    or artist.  Returns a list of ids """
 		q = self._sanitize(q)
 		# bit of a performance waster, but we don't want one track
 		# several times in the results (when artist and title match)
 		start = time.time()
-		ids = frozenset(self.sLut.query(q))
-		ret = map(lambda x: (x, self.songs[x][0], self.songs[x][1]),
-				ids)
+		ret = frozenset(self.sLut.query(q))
 		self.l.info('query %s took %s' % (q, time.time() - start))
-		return ret
+		return tuple(ret)
 
 	def request_track(self, track_id):
 		""" Requests the track with id <track_id> """

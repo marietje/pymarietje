@@ -404,12 +404,13 @@ class SearchWindow(ScrollingColsWindow):
 		return (N, map(lambda x: x/N, sums), maxs)
 
 	def get_cells(self, j):
-		return (self.data[j][1], self.data[j][2])
+		return (self.m.songs[self.data[j]][0],
+			self.m.songs[self.data[j]][1])
 	
 	def request_track(self):
 		""" Requests the track under the cursor """
 		cpos = self.c_offset + self.y_offset
-		track_id = self.data[cpos][0]
+		track_id = self.data[cpos]
 		self.m.request_track(track_id)
 			
 
