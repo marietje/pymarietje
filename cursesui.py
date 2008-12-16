@@ -576,6 +576,12 @@ class CursesMarietje:
 		   		self.m.songs_fetching) and \
 		   (not fetchQueue or self.m.queue_fetched or \
 		   		self.m.queue_fetching):
+			fetchPlaying = fetchPlaying and \
+					not self.m.playing_fetching
+			fetchSongs = fetchSongs and \
+					not self.m.songs_fetching
+			fetchQueue = fetchQueue and \
+					not self.m.queue_fetching
 			self.set_status("Refetching %s" % format_list(
 				(('playing',) if fetchPlaying else ()) +
 				(('songs',) if fetchSongs else ()) +
