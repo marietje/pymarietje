@@ -7,6 +7,7 @@ import gzip
 import curses
 import os.path
 import logging
+import optparse
 import threading
 import subprocess
 from random import random
@@ -16,7 +17,6 @@ from cStringIO import StringIO
 VERSION = 6
 INITIAL_TIMEOUT = 100
 DEFAULT_TIMEOUT = 1000
-USERDIR = ".pymarietje"
 
 CP_WHITE = 0
 CP_BLUE = 1
@@ -519,7 +519,7 @@ class QueueWindow(ScrollingColsWindow):
 		ScrollingColsWindow.touch(self, layout=layout)
 
 class CursesMarietje:
-	def __init__(self):
+	def __init__(self, host, port, userdir):
 		self.running = False
 		self.refresh_status = True
 		self.statusline = ''
@@ -527,7 +527,7 @@ class CursesMarietje:
 		self.old_query = ''
 		self.query = ''
 		self.userdir = os.path.expanduser(
-				os.path.join('~', USERDIR))
+				os.path.join('~', userdir))
 
 		self.options = {}
 		if not os.path.exists(self.userdir):
@@ -549,7 +549,9 @@ class CursesMarietje:
 		self.m = Marietje(self.options['marietje']['username'],
 				queueCb=self.on_queue_fetched,
 				songCb=self.on_songs_fetched,
-				playingCb=self.on_playing_fetched)
+				playingCb=self.on_playing_fetched,
+				host=host,
+				port=port)
 		self.l = logging.getLogger('CursesMarietje')
 
 		if not self.userdir is None:
@@ -907,7 +909,21 @@ class CursesMarietje:
 		less.wait()
 		
 if __name__ == '__main__':
-	m = CursesMarietje()
+	parser = optparse.OptionParser()
+	parser.add_option('-H', '--host', dest='host',
+			  default='zuidslet.science.ru.nl',
+			  help="Connect to HOST", metavar='HOST')
+	parser.add_option('-p', '--port', dest='port',
+			  default='1337', type='int',
+			  help="Connect on PORT", metavar='PORT')
+	parser.add_option('-u', '--userdir', dest='userdir',
+			  default='.pymarietje',
+			  help="Use PATH as userdir", metavar='PATH')
+	(options, args) = parser.parse_args()
+
+	m = CursesMarietje(host=options.host,
+			   port=options.port,
+			   userdir=options.userdir)
 	try:
 		m.run()
 	except Exception, e:
