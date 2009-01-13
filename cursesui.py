@@ -14,7 +14,7 @@ from random import random
 from marietje import Marietje, MarietjeException
 from cStringIO import StringIO
 
-VERSION = 6
+VERSION = 7
 INITIAL_TIMEOUT = 100
 DEFAULT_TIMEOUT = 1000
 
