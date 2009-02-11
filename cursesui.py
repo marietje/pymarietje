@@ -319,7 +319,7 @@ class ScrollingColsWindow:
 		return (self.y_offset, self.y_offset + self.old_h, self.y_max)
 
 class SearchWindow(ScrollingColsWindow):
-	def __init__(self, w, m, highlight=True, sort=True):
+	def __init__(self, w, m, highlight=True):
 		ScrollingColsWindow.__init__(self, w, use_cursor=True)
 		self.needDataInfoRecreate = False
 		self.data_info = None
@@ -327,7 +327,6 @@ class SearchWindow(ScrollingColsWindow):
 		self.m = m
 		self.query = None
 		self.highlight = highlight
-		self.sort = sort
 		
 	def draw_cell_text(self, val, start, end, colors):
 		if not self.highlight:
@@ -375,12 +374,7 @@ class SearchWindow(ScrollingColsWindow):
 		ScrollingColsWindow.touch(self, layout=layout)
 	
 	def fetch_data(self):
-		ret = self.m.query(self.query)
-		if self.sort:
-			ret = tuple(sorted(ret,
-				cmp=lambda x,y: cmp(self.m.songs[x],
-						    self.m.songs[y])))
-		return ret
+		return self.m.query(self.query)
 
 	def get_data_info(self):
 		if self.data is None:
@@ -665,13 +659,9 @@ class CursesMarietje:
 			self.options['search-window'] = dict()
 		if not 'highlight' in self.options['search-window']:
 			self.options['search-window']['highlight'] = True
-		if not 'sort' in self.options['search-window']:
-			self.options['search-window']['sort'] = True
 		self.search_main = SearchWindow(self.window.derwin(h-1,w,0,0),
 					self.m, highlight=self.options[
-						'search-window']['highlight'],
-						sort=self.options[
-						'search-window']['sort'])
+						'search-window']['highlight'])
 		self.status_w = self.window.derwin(1, w, h-1, 0)
 		self.main = self.queue_main
 		self.refetch(force=True)
