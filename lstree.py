@@ -30,7 +30,8 @@ class SimpleCachingLSTree(LSTree):
 					evict entries up to @nom_cache
 		"""
 		self.cache = dict()
-		self.cache[''] =  [time.time(), 0.0, entries]
+		self.cache[''] =  [time.time(), 0.0, sorted(entries,
+					cmp=lambda x,y: cmp(x[0],y[0]))]
 		self.max_cache = max_cache
 		self.nom_cache = nom_cache
 	
@@ -49,7 +50,11 @@ class SimpleCachingLSTree(LSTree):
 					self.cache[q][2].append((txt, obj))
 			self.cache[q][1] = time.time() - start
 		self.cache[q][0] = time.time()
+		dup_lut = set()
 		for txt, obj in self.cache[q][2]:
+			if obj in dup_lut:
+				continue
+			dup_lut.add(obj)
 			yield obj
 	
 	def prune(self):

@@ -354,9 +354,9 @@ class Marietje:
 		# bit of a performance waster, but we don't want one track
 		# several times in the results (when artist and title match)
 		start = time.time()
-		ret = frozenset(self.sLut.query(q))
+		ret = tuple(self.sLut.query(q))
 		self.l.info('query %s took %s' % (q, time.time() - start))
-		return tuple(ret)
+		return ret
 
 	def request_track(self, track_id):
 		""" Requests the track with id <track_id> """
