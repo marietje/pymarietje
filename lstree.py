@@ -22,7 +22,7 @@ class LSTree(object):
 class SimpleCachingLSTree(LSTree):
 	""" Simple implementation of LSTree, which caches """
 
-	def __init__(self, entries, max_cache=10, nom_cache=7):
+	def __init__(self, entries, _cmp, max_cache=10, nom_cache=7):
 		""" Creates a LS Tree
 			@entries	List of (text, obj) pairs
 			@max_cache	Maximum amount of cache entries
@@ -30,8 +30,8 @@ class SimpleCachingLSTree(LSTree):
 					evict entries up to @nom_cache
 		"""
 		self.cache = dict()
-		self.cache[''] =  [time.time(), 0.0, sorted(entries,
-					cmp=lambda x,y: cmp(x[0],y[0]))]
+		
+		self.cache[''] =  [time.time(), 0.0, sorted(entries, cmp=_cmp)]
 		self.max_cache = max_cache
 		self.nom_cache = nom_cache
 	

@@ -238,6 +238,9 @@ class Marietje:
 		self.playing_thread.start()
 	
 	def run_fetch_songs(self):
+		def entry_compare(x, y):
+			v = cmp(x[0], y[0])
+			return v if v != 0 else cmp(x[1], y[1])
 		try:
 			starttime = time.time()
 			songs = dict()
@@ -249,7 +252,7 @@ class Marietje:
 			for id, (artist, title) in songs.iteritems():
 				entries.append((self._sanitize(artist) + " " +
 					self._sanitize(title), id))
-			sLut = SimpleCachingLSTree(entries)
+			sLut = SimpleCachingLSTree(entries, _cmp=entry_compare)
 			sLutGenTime = time.time() - starttime
 			with self.songs_cond:
 				self.songs = songs
