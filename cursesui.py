@@ -482,7 +482,8 @@ class QueueWindow(ScrollingColsWindow):
 		# Compute the timestamps of initiation of each of 
 		# the queued tracks
 		if self.time_lut is None:
-			if self.m.playing_fetched:
+			if self.m.playing_fetched and \
+			   self.m.queue_fetched:
 				id, songStarted, songLength, \
 					serverTime = self.m.nowPlaying
 				offset = self.m.queueOffsetTime
