@@ -744,6 +744,12 @@ class CursesMarietje:
 			elif k == 258: # down
 				self.main.scroll_down()
 				self.refresh_status = True
+			elif k == ord('?'):
+				self.show_help()
+				# We break the main loop, which
+				# is then reentered via
+				# curses.wrapper
+				break
 			elif k == 263 or k == 127: # backspace
 				if len(self.query) != 0:
 					self.query = self.query[:-1]
@@ -758,6 +764,11 @@ class CursesMarietje:
 			elif k == 21: # C-u
 				if len(self.query) != 0:
 					self.query = ''
+			elif k == 20: # C-t
+				if len(self.query) >= 2:
+					self.query = (self.query[:-2] +
+						      self.query[-1] +
+						      self.query[-2])
 			elif self.main is self.search_main and  k == 10: # RET
 				try:
 					self.search_main.request_track()
