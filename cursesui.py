@@ -871,6 +871,7 @@ class CursesMarietje:
 		if from_cache:
 			self.set_status("Songs (cache) in %s" % self.m.sCacheLoadTime)
 		else:
+			if not hasattr(self.m, 'sLoadTime'): return
 			self.set_status("Songs in %s" % self.m.sLoadTime)
 	
 	def on_playing_fetched(self):
