@@ -1,6 +1,7 @@
 from __future__ import with_statement
 
 import os
+import sys
 import yaml
 import time
 import gzip
@@ -937,3 +938,4 @@ if __name__ == '__main__':
 			print m.log.getvalue()
 		else:
 			print e
+	sys.exit(0)
