@@ -405,6 +405,7 @@ class SearchWindow(ScrollingColsWindow):
 	def request_track(self):
 		""" Requests the track under the cursor """
 		cpos = self.c_offset + self.y_offset
+		if len(self.data) == 0: return
 		track_id = self.data[cpos]
 		self.m.request_track(track_id)
 			
