@@ -890,7 +890,7 @@ class CursesMarietje:
 				  " Alt+r  refresh screen   Alt+R  refresh screen harder\n"+
 				  " Alt+x  quit             Alt+?  guess!\n"+
 				  " Ctrl+u clear query      Ctrl+w only the last word\n"+
-				  " Alt+a  list all songs\n"+
+				  " Alt+a  list all songs   Ctrl+t transpose last two chars\n"+
 				  "\n"+
 				  "RUNTIME\n"+
 				  "  Load times\n"+
