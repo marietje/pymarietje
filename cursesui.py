@@ -15,7 +15,7 @@ from random import random
 from marietje import Marietje, MarietjeException
 from cStringIO import StringIO
 
-VERSION = 8
+VERSION = 9
 INITIAL_TIMEOUT = 100
 DEFAULT_TIMEOUT = 1000
 
@@ -857,8 +857,6 @@ class CursesMarietje:
 
 	def on_songs_fetched(self, from_cache=False):
 		if not self.running:
-			# That cache is DAMNED quick
-			assert from_cache
 			return
 		if not self.m.songs_fetched:
 			self.set_status("Songs fetch failed: %s" % \
