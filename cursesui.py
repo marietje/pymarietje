@@ -886,7 +886,7 @@ class CursesMarietje:
 	def show_help(self):
 		less = subprocess.Popen(['less', '-c'], stdin=subprocess.PIPE)
 		less.stdin.write((" Curses based Python Marietje client %(version)s\n"+
-				  "      (c) 2008 - Bas Westerbaan, 99BA289B\n"+
+				  "      (c) 2008, 2009 - Bas Westerbaan, 99BA289B\n"+
 				  "\n"+
 				  " Alt+f  refetch some     Alt+F  refetch all\n"+
 				  " Alt+r  refresh screen   Alt+R  refresh screen harder\n"+
