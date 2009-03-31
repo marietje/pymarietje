@@ -194,9 +194,9 @@ class Marietje:
 				raise AlreadyFetchingException
 			self.playing_fetching = True
 
-	# Ugly temporary workaround
-	def start_fetch(self, fetchSongs=True, fetchPlaying=True,
-			fetchQueue=True):
+	def start_fetch(self, fetchSongs=True,
+			      fetchPlaying=True,
+			      fetchQueue=True):
 		try:
 			if fetchSongs:
 				self._request_song_fetch()
@@ -212,28 +212,18 @@ class Marietje:
 				self._request_queue_fetch()
 		except AlreadyFetchingException:
 			fetchQueue = False
-		self.fetch_thread = threading.Thread(target=self.run_fetch,
-					kwargs={'fetchPlaying': fetchPlaying,
-						'fetchSongs': fetchSongs,
-						'fetchQueue': fetchQueue})
-		self.fetch_thread.start()
-	def run_fetch(self, fetchPlaying, fetchSongs, fetchQueue):
-		if fetchQueue: self.run_fetch_queue()
-		if fetchPlaying: self.run_fetch_playing()
-		if fetchSongs: self.run_fetch_songs()
-	# / Ugly temporary workaround
+		if fetchSongs: self.start_fetch_songs()
+		if fetchQueue: self.start_fetch_queue()
+		if fetchPlaying: self.start_fetch_playing()
 
 	# These will be used if the annoying marietjed bug is fixed
 	def start_fetch_songs(self):
-		self._request_song_fetch()
 		self.songs_thread = threading.Thread(target=self.run_fetch_songs)
 		self.songs_thread.start()
 	def start_fetch_queue(self):
-		self._request_queue_fetch()
 		self.queue_thread = threading.Thread(target=self.run_fetch_queue)
 		self.queue_thread.start()
 	def start_fetch_playing(self):
-		self._request_playing_fetch()
 		self.playing_thread = threading.Thread(target=self.run_fetch_playing)
 		self.playing_thread.start()
 	
