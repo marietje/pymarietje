@@ -849,7 +849,7 @@ class CursesMarietje:
 			self.set_status("Queue fetch failed: %s" % \
 					str(self.m.qException))
 			return
-		if self.m.songs_fetched and self.m.playing_fetched:
+		if not(self.m.songs_fetching or self.m.playing_fetching):
 			self.timeout = DEFAULT_TIMEOUT
 			self.update_timeout = True
 		self.queue_main.touch(layout=True, data=True)
@@ -862,7 +862,7 @@ class CursesMarietje:
 			self.set_status("Songs fetch failed: %s" % \
 					str(self.m.sException))
 			return
-		if self.m.queue_fetched and self.m.playing_fetched:
+		if not(self.m.queue_fetching or self.m.playing_fetching):
 			self.timeout = DEFAULT_TIMEOUT
 			self.update_timeout = True
 		self.queue_main.touch(layout=True, data=True)
@@ -877,7 +877,7 @@ class CursesMarietje:
 			self.set_status("Playing fetch failed: %s" % \
 					str(self.m.pException))
 			return
-		if self.m.songs_fetched and self.m.queue_fetched:
+		if not(self.m.songs_fetching or self.m.queue_fetching):
 			self.timeout = DEFAULT_TIMEOUT
 			self.update_timeout = True
 		self.queue_main.touch(layout=True, data=True)
