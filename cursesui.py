@@ -915,7 +915,7 @@ class CursesMarietje:
 		less.stdin.close()
 		less.wait()
 		
-if __name__ == '__main__':
+def main():
 	parser = optparse.OptionParser()
 	parser.add_option('-H', '--host', dest='host',
 			  default='zuidslet.science.ru.nl',
@@ -940,3 +940,6 @@ if __name__ == '__main__':
 		else:
 			print e
 	sys.exit(0)
+
+if __name__ == '__main__':
+	main()
