@@ -43,7 +43,7 @@ class RawMarietje:
 		   bits[0] != 'TOTAL' or bits[2] != 'TIMELEFT':
 			   raise MarietjeException, \
 		   		"Unexpected reply: %s" % '::'.join(bits)
-		total, timeLeft = int(bits[1]), int(bits[3])
+		total, timeLeft = int(bits[1]), float(bits[3])
 		rl = list()
 		for i in xrange(total):
 			bits = f.readline()[:-1].split('::')
@@ -51,7 +51,7 @@ class RawMarietje:
 				raise MarietjeException, \
 	 				"Unexpected SONG line: %s" % '::'.join(bits)
 			artist, title, length, by = bits[1], bits[2], \
-						int(bits[3]), bits[4] 
+						float(bits[3]), bits[4] 
 			rl.append((artist, title, length, by))
 		s.close()
 		return (timeLeft, rl)
@@ -66,8 +66,8 @@ class RawMarietje:
 		if len(bits) != 8 or bits[0] != 'ID' or bits[2] != 'Timestamp' or \
 				bits[4] != 'Length' or bits[6] != 'Time':
 			raise MarietjeException, "Unexpected reply: %s" % l
-		id, timeStamp, length, time = int(bits[1]), int(bits[3]), \
-					      int(bits[5]), int(bits[7])
+		id, timeStamp, length, time = int(bits[1]), float(bits[3]), \
+					      float(bits[5]), float(bits[7])
 		return (id, timeStamp, length, time)
 
 	def list_tracks(self):
