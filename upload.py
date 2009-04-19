@@ -1,7 +1,6 @@
 import os
 import sys
 import time
-from eyeD3 import Tag
 from marietje import RawMarietje
 from optparse import OptionParser
 
@@ -24,6 +23,8 @@ if __name__ == '__main__':
 			help="Don't ask confirmation")
 	parser.add_option("-q", "--quiet", dest="quiet", action="store_true",
 			help="Be quiet, implies force")
+	parser.add_option("--no-eyeD3", dest="eyeD3", action="store_false",
+			help="Don't use eyeD3")
 
 	(options, args) = parser.parse_args()
 
@@ -35,19 +36,31 @@ if __name__ == '__main__':
 		options.force = True
 	
 	fn = args[0]
-	tag = Tag()
-	tag.link(fn)
+	if options.eyeD3:
+		from eyeD3 import Tag
+		tag = Tag()
+		tag.link(fn)
 	if options.artist is None:
-		options.artist = tag.getArtist()
+		if options.eyeD3:
+			options.artist = tag.getArtist()
+		else:
+			print "error: no artist specified"
+			sys.exit(-1)
 	else:
-		if options.artist != tag.getArtist() and not options.quiet:
+		if (options.eyeD3 and options.artist != tag.getArtist() 
+				and not options.quiet):
 			print "warning: %s (input) != %s (tag)" % (
 					options.artist, tag.getArtist())
 
 	if options.title is None:
-		options.title = tag.getTitle()
+		if options.eyeD3:
+			options.title = tag.getTitle()
+		else:
+			print "error: no title specified"
+			sys.exit(-2)
 	else:
-		if options.title != tag.getTitle() and not options.quiet:
+		if (options.eyeD3 and options.title != tag.getTitle()
+				and not options.quiet):
 			print "warning: %s (input) != %s (tag)" % (
 					options.title, tag.getTitle())
 	
