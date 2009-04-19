@@ -57,6 +57,7 @@ def format_list(l):
 def format_time(s):
 	""" Formats a <s> seconds into <hours>:<minutes>:<seconds>,
 	    nicely. """
+	s = int(s)
 	if s < 0:
 		ret = '-'
 		s = abs(s)
