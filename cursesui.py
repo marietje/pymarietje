@@ -420,6 +420,7 @@ class QueueWindow(ScrollingColsWindow):
 		self.last_redraw = 0
 	
 	def create_data_info(self):
+		# Sometimes self.m.queue doesn't exist
 		N = len(self.m.queue) + 1
 		l = len(self.get_cells(0))
 		sums = [0]*l
