@@ -493,7 +493,7 @@ class QueueWindow(ScrollingColsWindow):
 				for i in xrange(len(self.m.queue)):
 					self.time_lut.append(offset)
 					offset += self.m.queue[i][2]
-		if self.data_info is None:
+		if self.data_info is None and self.m.queue_fetched:
 			self.data_info = self.create_data_info()
 		return self.data_info
 	
