@@ -689,6 +689,8 @@ class CursesMarietje:
 						self.running = False
 						break
 					if k == -1:
+						if len(self.query) != 0:
+							self.query = ''
 						pass
 					elif k == ord('x'):
 						self.running = False
@@ -929,6 +931,8 @@ def main():
 			  default='.pymarietje',
 			  help="Use PATH as userdir", metavar='PATH')
 	(options, args) = parser.parse_args()
+
+	os.environ['ESCDELAY'] = "0";
 
 	m = CursesMarietje(host=options.host,
 			   port=options.port,
