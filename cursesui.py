@@ -539,6 +539,8 @@ class CursesMarietje:
 			if os.path.exists(fp):
 				with open(fp) as f:
 					self.options = yaml.load(f)
+				if self.options is None:
+					self.options = dict()
 		
 		if not 'marietje' in self.options:
 			self.options['marietje'] = dict()
