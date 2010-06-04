@@ -23,8 +23,8 @@ if __name__ == '__main__':
 			help="Don't ask confirmation")
 	parser.add_option("-q", "--quiet", dest="quiet", action="store_true",
 			help="Be quiet, implies force")
-	parser.add_option("--no-eyeD3", dest="eyeD3", action="store_false",
-			help="Don't use eyeD3")
+	parser.add_option("--no-mutagen", dest="mutagen", action="store_false",
+			help="Don't use mutagen to extract tags", default=True)
 
 	(options, args) = parser.parse_args()
 
@@ -36,33 +36,34 @@ if __name__ == '__main__':
 		options.force = True
 	
 	fn = args[0]
-	if options.eyeD3:
-		from eyeD3 import Tag
-		tag = Tag()
-		tag.link(fn)
+	if options.mutagen:
+		import mutagen
+		tags = mutagen.File(fn, easy=True)
 	if options.artist is None:
-		if options.eyeD3:
-			options.artist = tag.getArtist()
+		if options.mutagen and 'artist' in tags:
+			options.artist = tags['artist'][0]
 		else:
 			print "error: no artist specified"
 			sys.exit(-1)
 	else:
-		if (options.eyeD3 and options.artist != tag.getArtist() 
+		if (options.mutagen and 'artist' in tags and 
+				options.artist != tags['artist'][0]
 				and not options.quiet):
 			print "warning: %s (input) != %s (tag)" % (
-					options.artist, tag.getArtist())
+					options.artist, tags['artist'][0])
 
 	if options.title is None:
-		if options.eyeD3:
-			options.title = tag.getTitle()
+		if options.mutagen and 'title' in tags:
+			options.title = tags['title'][0]
 		else:
 			print "error: no title specified"
 			sys.exit(-2)
 	else:
-		if (options.eyeD3 and options.title != tag.getTitle()
+		if (options.mutagen and 'title' in tags and
+				not options.title == tags['title'][0]
 				and not options.quiet):
 			print "warning: %s (input) != %s (tag)" % (
-					options.title, tag.getTitle())
+					options.title, tags['title'][0])
 	
 	if options.username is None:
 		options.username = os.getlogin()
