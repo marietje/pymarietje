@@ -1,0 +1,14 @@
+PyMarietje
+----------
+
+PyMarietje is a client for MarietjeD.  MarietjeD is a music Daemon originally
+written in C++ and used by the student associations of the science faculty
+at the Radboud University Nijmegen.
+
+At the moment the only client, is a curses client.
+
+Also, the only supported protocol is the `classic` (or: dumb) protocol.
+
+MarietjeD has been reimplemented in Python by a project called MarieD.  See
+
+	 http://github.com/bwesterb/maried
