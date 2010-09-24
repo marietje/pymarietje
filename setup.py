@@ -3,7 +3,7 @@
 from setuptools import setup
 from get_git_version import get_git_version
 
-setup(name='maried',
+setup(name='pymarietje',
       version=get_git_version(),
       description='Curses client for MarietjeD music daemon',
       author='Bas Westerbaan',
