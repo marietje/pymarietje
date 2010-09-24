@@ -4,7 +4,7 @@ import time
 from marietje import RawMarietje
 from optparse import OptionParser
 
-if __name__ == '__main__':
+def main():
 	usage = "usage: %prog [options] file-name"
 	parser = OptionParser(usage=usage)
 
@@ -93,3 +93,6 @@ if __name__ == '__main__':
 	if not options.quiet:
 		print "Finished in %ss: %sMB/s" % (
 				dur, size / dur / 1024 / 1024)
+
+if __name__ == '__main__':
+	main()
