@@ -17,5 +17,5 @@ setup(name='maried',
 	      'console_scripts': [
 		      'upload-to-marietje = pymarietje.main.upload:main',
 		      'marietje = pymarietje.cursesui:main',
-	      ]
+	      ]}
       )
