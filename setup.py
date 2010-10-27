@@ -12,6 +12,7 @@ setup(name='pymarietje',
       packages=['pymarietje'],
       package_dir={'pymarietje': 'src'},
       install_requires = ['docutils>=0.3',
+	      		  'mutagen>=1.20',
 			  'pyyaml>=3.00'],
       entry_points = {
 	      'console_scripts': [
