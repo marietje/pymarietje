@@ -15,7 +15,7 @@ setup(name='pymarietje',
 			  'pyyaml>=3.00'],
       entry_points = {
 	      'console_scripts': [
-		      'upload-to-marietje = pymarietje.main.upload:main',
+		      'upload-to-marietje = pymarietje.upload:main',
 		      'marietje = pymarietje.cursesui:main',
 	      ]}
       )
