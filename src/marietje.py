@@ -254,7 +254,7 @@ class Marietje:
                         self.sException = e
                         self.l.exception("Marietje exception")
                 except Exception:
-                        self.l.exception("Uncatched exception")
+                        self.l.exception("Uncaught exception")
                 finally:
                         with self.songs_cond:
                                 self.songs_fetching = False
@@ -276,7 +276,7 @@ class Marietje:
                         self.qException = e
                         self.l.exception("Marietje exception")
                 except Exception:
-                        self.l.exception("Uncatched exception")
+                        self.l.exception("Uncaught exception")
                 finally:
                         with self.queue_cond:
                                 self.queue_fetching = False
@@ -302,7 +302,7 @@ class Marietje:
                         self.pException = e
                         self.l.exception("Marietje exception")
                 except Exception:
-                        self.l.exception("Uncatched exception")
+                        self.l.exception("Uncaught exception")
                 finally:
                         with self.playing_cond:
                                 self.playing_fetching = False
