@@ -1,0 +1,7 @@
+includes:
+  - joyce
+definitions:
+  marietjeClient:
+    implementedBy: marietje.client.MarietjeClient
+    settings:
+      joyceClient: {type: joyceClient}

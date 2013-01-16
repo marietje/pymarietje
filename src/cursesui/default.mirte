@@ -1,0 +1,8 @@
+includes:
+  - marietje/client
+definitions:
+  marietjeCursesUI:
+    implementedBy: marietje.cursesui.ui.MarietjeCursesUI
+    run: true
+    settings:
+      client: {type: marietjeClient}
