@@ -15,7 +15,7 @@ def main():
         parser.add_option("-u", "--username", dest="username", default=None,
                         help="Upload as USERNAME", metavar="USERNAME")
         parser.add_option("-H", "--host", dest="host",
-                        default="devslet.sci.kun.nl",
+                        default="marietje.marie-curie.nl",
                         help="Upload to HOST", metavar="HOST")
         parser.add_option("-p", "--port", dest="port", default=1337, type=int,
                         help="Upload on PORT", metavar="PORT")

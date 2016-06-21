@@ -1,7 +1,7 @@
 from __future__ import with_statement
 import threading
 
-DEFAULT_HOST = 'devslet.sci.kun.nl'
+DEFAULT_HOST = 'marietje.marie-curie.nl'
 DEFAULT_PORT = 1337
 DEFAULT_LS_CHARSET = '1234567890qwertyuiopasdfghjklzxcvbnm '
 
